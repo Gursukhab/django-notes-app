@@ -12,7 +12,7 @@ pipeline {
         stage("Build") {
             steps {
                 echo "Building the Docker image..."
-                sh "docker build -t appy:latest ."
+                sh "docker build -t sukhab:latest ."
             }
         }
 
@@ -20,9 +20,9 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhubcred', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     script {
-                        def imageName = "${DOCKER_USER}/apply:latest"
+                        def imageName = "${DOCKER_USER}/sukhab:latest"
                         sh "docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}"
-                        sh "docker tag appy:latest ${imageName}"
+                        sh "docker tag sukhab:latest ${imageName}"
                         sh "docker push ${imageName}"
                     }
                 }
