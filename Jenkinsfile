@@ -40,7 +40,7 @@ pipeline {
                     }
 
                     echo "Running new container..."
-                    sh "docker run -d -p 8000:8000 --name elastic_mcnulty appy:latest"
+                    sh "docker run -d -p 8000:8000 --name elastic_mcnulty sukhab:latest"
 
                     echo "Waiting for container to be ready..."
                     sleep 5
