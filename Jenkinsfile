@@ -9,47 +9,20 @@ pipeline {
             }
         }
 
-        stage("Build") {
-            steps {
-                echo "Building the Docker image..."
-                sh "docker build -t sukhab:latest ."
-            }
-        }
-
-        stage("Push to Docker Hub") {
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'dockerhubcred', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                    script {
-                        def imageName = "${DOCKER_USER}/sukhab:latest"
-                        sh "docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}"
-                        sh "docker tag sukhab:latest ${imageName}"
-                        sh "docker push ${imageName}"
-                    }
-                }
-            }
-        }
+        
+        
 
         stage("Deploy") {
             steps {
-                script {
-                    def existingContainer = sh(script: "docker ps -aq -f name=elastic_mcnulty", returnStdout: true).trim()
-                    if (existingContainer) {
-                        echo "Stopping & removing old container..."
-                        sh "docker stop elastic_mcnulty || true"
-                        sh "docker rm elastic_mcnulty || true"
-                    }
 
                     echo "Running new container..."
-                    sh "docker run -d -p 8000:8000 --name elastic_mcnulty sukhab:latest"
+                    sh "docker compose up "
 
                     echo "Waiting for container to be ready..."
                     sleep 5
 
-                    echo "Applying migrations..."
-                    sh "docker exec elastic_mcnulty python manage.py makemigrations tasks || true"
-                    sh "docker exec elastic_mcnulty python manage.py migrate || true"
-                }
-            }
-        }
+                   
+    }
+}
     }
 }
