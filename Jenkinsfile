@@ -16,7 +16,7 @@ pipeline {
             steps {
 
                     echo "Running new container..."
-                    sh "docker compose up "
+                    sh "docker compose up -d"
 
                     echo "Waiting for container to be ready..."
                     sleep 5
