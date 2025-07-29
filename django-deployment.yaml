@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: django
-          image: django_app
+          image: gursukhab/django:latest
           command: ["/bin/sh", "-c"]
           args:
             - >
@@ -23,15 +23,23 @@ spec:
               gunicorn notesapp.wsgi:application --bind 0.0.0.0:8000
           ports:
             - containerPort: 8000
-          envFrom:
-            - secretRef:
-                name: django-secret
-          readinessProbe:
-            httpGet:
-              path: /admin
-              port: 8000
-            initialDelaySeconds: 30
-            periodSeconds: 10
-            timeoutSeconds: 5
-            successThreshold: 1
+          env:
+           - name: DB_NAME                                                                                                             
+              value: test_db                                                                                                            
+            - name: DB_USER                                                                                                             
+              value: root                                                                                                               
+            - name: DB_PASSWORD                                                                                                         
+              value: root                                                                                                               
+            - name: DB_HOST                                                                                                             
+              value: db-service                                                                                                         
+            - name: DB_PORT                                                                                                             
+              value: "3306"                                                                                                             
+          readinessProbe:                                                                                                               
+            httpGet:                                                                                                                    
+              path: /admin                                                                                                              
+              port: 8000                                                                                                                
+            initialDelaySeconds: 30                                                                                                     
+            periodSeconds: 10                                                                                                           
+            timeoutSeconds: 5                                                                                                           
+            successThreshold: 1                                                                                                         
             failureThreshold: 3
