@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: django
+  namespace: notes-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: django
+  template:
+    metadata:
+      labels:
+        app: django
+    spec:
+      containers:
+        - name: django
+          image: django_app
+          command: ["/bin/sh", "-c"]
+          args: ["python manage.py migrate --noinput && gunicorn notesapp.wsgi --bind 0.0.0.0:8000"]
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - secretRef:
+                name: django-secret
+          readinessProbe:
+            httpGet:
+              path: /admin
+              port: 8000
+            initialDelaySeconds: 30
+            periodSeconds: 10
