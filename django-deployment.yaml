@@ -17,7 +17,10 @@ spec:
         - name: django
           image: django_app
           command: ["/bin/sh", "-c"]
-          args: ["python manage.py migrate --noinput && gunicorn notesapp.wsgi --bind 0.0.0.0:8000"]
+          args:
+            - >
+              python manage.py migrate --noinput &&
+              gunicorn notesapp.wsgi:application --bind 0.0.0.0:8000
           ports:
             - containerPort: 8000
           envFrom:
@@ -29,3 +32,6 @@ spec:
               port: 8000
             initialDelaySeconds: 30
             periodSeconds: 10
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 3
